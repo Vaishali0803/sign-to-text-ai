@@ -13,7 +13,7 @@ camera = Camera()
 hand_detector = HandDetector()
 pose_detector = PoseDetector()
 
-word = "HELLO"
+word = "BYE"
 
 save_folder = "dataset/custom_dataset"
 os.makedirs(save_folder, exist_ok=True)

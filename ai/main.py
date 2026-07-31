@@ -13,6 +13,8 @@ hand_detector = HandDetector()
 pose_detector = PoseDetector()
 recognizer = ASLRecognizer()
 
+
+
 while True:
 
     frame = camera.get_frame()
@@ -29,9 +31,17 @@ while True:
         pose_results,
         hand_results
     )
-  
 
-    word, confidence = recognizer.predict(features)
+    num_hands = 0
+
+    if hand_results.multi_hand_landmarks:
+        num_hands = len(hand_results.multi_hand_landmarks)
+
+    if num_hands == 0:
+        word = ""
+        confidence = 0.0
+    else:
+        word, confidence = recognizer.predict(features)
 
     num_hands = (
         len(hand_results.multi_hand_landmarks)
@@ -39,33 +49,47 @@ while True:
         else 0
     )
 
-    cv2.putText(
-        frame,
-        f"Word: {word}",
-        (10, 110),
+    # Word
+    text = f"Word: {word}"
+    (text_width, text_height), _ = cv2.getTextSize(
+        text,
         cv2.FONT_HERSHEY_SIMPLEX,
         0.8,
-        (0, 255, 255),
         2
     )
 
-    cv2.putText(
-        frame,
-        f"Confidence: {confidence:.2f}",
-        (10, 150),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.8,
-        (0, 255, 255),
-        2
-    )
+    x = frame.shape[1] - text_width - 20   # 20 px from right edge
+    y = 40                                 # 40 px from top
 
     cv2.putText(
         frame,
-        f"Hands: {num_hands}",
-        (10, 190),
+        text,
+        (x, y),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.8,
-        (0, 255, 255),
+        (0, 0, 0),   # Black
+        2
+    )
+
+    # Number of hands
+    text = f"Hands: {num_hands}"
+    (text_width, text_height), _ = cv2.getTextSize(
+        text,
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        2
+    )
+
+    x = frame.shape[1] - text_width - 20
+    y = 80
+
+    cv2.putText(
+        frame,
+        text,
+        (x, y),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0, 0, 0),   # Black
         2
     )
 
