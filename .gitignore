@@ -1,0 +1,6 @@
+ai/dataset/
+__pycache__/
+*.pkl
+*.env
+.venv/
+node_modules/
